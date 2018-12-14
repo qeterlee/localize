@@ -7,6 +7,7 @@ import { push } from 'react-router-redux';
 import { renderRoutes } from 'react-router-config';
 import { provideHooks } from 'redial';
 import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
+import { Translate } from 'react-localize-redux';
 import Navbar from 'react-bootstrap/lib/Navbar';
 import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
@@ -172,7 +173,9 @@ class App extends Component {
               />
             </div>
           )}
-
+          <h1>
+            <Translate id="movie.title" />
+          </h1>
           {renderRoutes(route.routes)}
         </div>
         <InfoBar />

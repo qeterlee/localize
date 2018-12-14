@@ -4,6 +4,8 @@
 import '@babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { LocalizeProvider } from 'react-localize-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import { renderRoutes } from 'react-router-config';
 import { trigger } from 'redial';
@@ -99,11 +101,27 @@ initSocket();
     ReactDOM.hydrate(
       <HotEnabler>
         <Provider store={store} {...providers}>
-          <ConnectedRouter history={history}>
-            <ReduxAsyncConnect routes={_routes} store={store} helpers={providers}>
-              {renderRoutes(_routes)}
-            </ReduxAsyncConnect>
-          </ConnectedRouter>
+          <LocalizeProvider
+            store={store}
+            initialize={{
+              languages: [{ name: 'English', code: 'EN' }, { name: 'Deutsch', code: 'DE' }],
+              translation: {
+                movie: {
+                  title: ['Jurassic Park', 'Le Parc jurassique']
+                }
+              },
+              options: {
+                defaultLanguage: 'EN',
+                renderToStaticMarkup
+              }
+            }}
+          >
+            <ConnectedRouter history={history}>
+              <ReduxAsyncConnect routes={_routes} store={store} helpers={providers}>
+                {renderRoutes(_routes)}
+              </ReduxAsyncConnect>
+            </ConnectedRouter>
+          </LocalizeProvider>
         </Provider>
       </HotEnabler>,
       dest

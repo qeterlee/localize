@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
+import { LocalizeProvider } from 'react-localize-redux';
 import morgan from 'morgan';
 import favicon from 'serve-favicon';
 import compression from 'compression';
@@ -159,13 +160,29 @@ app.use(async (req, res) => {
     const component = (
       <Loadable.Capture report={moduleName => modules.push(moduleName)}>
         <Provider store={store} {...providers}>
-          <ConnectedRouter history={history}>
-            <StaticRouter location={req.originalUrl} context={context}>
-              <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
-                {renderRoutes(routes)}
-              </ReduxAsyncConnect>
-            </StaticRouter>
-          </ConnectedRouter>
+          <LocalizeProvider
+            store={store}
+            initialize={{
+              languages: [{ name: 'English', code: 'EN' }, { name: 'Deutsch', code: 'DE' }],
+              translation: {
+                movie: {
+                  title: ['Jurassic Park', 'Le Parc jurassique']
+                }
+              },
+              options: {
+                defaultLanguage: 'EN',
+                renderToStaticMarkup: ReactDOM.renderToStaticMarkup
+              }
+            }}
+          >
+            <ConnectedRouter history={history}>
+              <StaticRouter location={req.originalUrl} context={context}>
+                <ReduxAsyncConnect routes={routes} store={store} helpers={providers}>
+                  {renderRoutes(routes)}
+                </ReduxAsyncConnect>
+              </StaticRouter>
+            </ConnectedRouter>
+          </LocalizeProvider>
         </Provider>
       </Loadable.Capture>
     );
